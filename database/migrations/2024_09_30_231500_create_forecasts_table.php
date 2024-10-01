@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('forecasts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('location_id')->constrained();
-            $table->date('date_forecast');
+            $table->foreignId('location_id')->constrained()->onDelete('cascade');
+            $table->datetime('date_forecast');
             $table->string('main');
             $table->string('description');
             $table->string('icon');

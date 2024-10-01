@@ -8,6 +8,7 @@ use App\Interfaces\Repositories\LocationRepositoryInterface;
 use App\Repositories\LocationRepository;
 use App\Interfaces\Services\LocationServiceInterface;
 use App\Services\LocationService;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {

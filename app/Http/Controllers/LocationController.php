@@ -7,13 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\UnauthorizedActionException;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class LocationController extends Controller
 {
-    private CONST DEFAULT_ADD_MSG_ERROR = 'An error occurred while creating the location'; 
-    private CONST DEFAULT_DELETE_MSG_ERROR = 'An error occurred while deleting the location';
-
     /**
      * Create a new LocationController instance.
      * 
@@ -33,28 +31,26 @@ class LocationController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'user_id' => 'required|integer',
-                'city' => 'required|string|max:255',
-                'state' => 'required|string|max:255',
+                'name' => 'required|string|max:255',
                 'forecasts' => 'required|array',
-                'forecasts.*.date' => 'required|date',
+                'forecasts.*' => 'required|array',
+                'forecasts.*.date_forecast' => 'required|date',
+                'forecasts.*.main' => 'required|string|max:255',
+                'forecasts.*.description' => 'required|string|max:255',
+                'forecasts.*.icon' => 'required|string|max:255',
+                'forecasts.*.temperature' => 'required|numeric',
+                'forecasts.*.feels_like' => 'required|numeric',
                 'forecasts.*.min_temperature' => 'required|numeric',
                 'forecasts.*.max_temperature' => 'required|numeric',
-                'forecasts.*.condition' => 'required|string|max:255',
+                'forecasts.*.pressure' => 'required|numeric',
+                'forecasts.*.humidity' => 'required|numeric',
+                'forecasts.*.wind_speed' => 'required|numeric',
+                'forecasts.*.cloudiness' => 'required|numeric',
             ]);
 
-            // Get user ID from session
-            $userId = $request->session()->get('user_id');
-            if (!$userId) {
-                return response()->json([
-                    'message' => 'User not authenticated',
-                ], JsonResponse::HTTP_UNAUTHORIZED);
-            }
-
             $locationData = [
-                'user_id' => $userId,
-                'city' => $validatedData['city'],
-                'state' => $validatedData['state'],
+                'user_id' => Auth::id(),
+                'name' => $validatedData['name'],
             ];
 
             $forecastsData = $validatedData['forecasts'];
@@ -64,34 +60,30 @@ class LocationController extends Controller
             return response()->json($location, JsonResponse::HTTP_CREATED);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => self::DEFAULT_ADD_MSG_ERROR,
                 'errors' => $e->errors(),
             ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         } catch (UnauthorizedActionException $e) {
             return response()->json([
-                'message' => self::DEFAULT_ADD_MSG_ERROR,
                 'error' => $e->getMessage(),
             ], $e->getStatusCode());
         } catch (Exception $e) {
             return response()->json([
-                'message' => self::DEFAULT_ADD_MSG_ERROR,
                 'error' => $e->getMessage(),
             ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function delete(Request $request, int $id): JsonResponse
+    /**
+     * Delete a location.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function delete(int $id): JsonResponse
     {
         try {
-            // Get user ID from session
-            $userId = $request->session()->get('user_id');
-            if (!$userId) {
-                return response()->json([
-                    'message' => 'User not authenticated',
-                ], JsonResponse::HTTP_UNAUTHORIZED);
-            }
-
-            $isDeleted = $this->locationService->deleteLocation($id, $userId);
+            $isDeleted = $this->locationService->deleteLocation($id, Auth::id());
 
             if ($isDeleted) {
                 return response()->json(null, JsonResponse::HTTP_NO_CONTENT);
@@ -100,7 +92,6 @@ class LocationController extends Controller
             return response()->json(null, JsonResponse::HTTP_NOT_FOUND);
         } catch (UnauthorizedActionException $e) {
             return response()->json([
-                'message' => self::DEFAULT_DELETE_MSG_ERROR,
                 'error' => $e->getMessage(),
             ], $e->getStatusCode());
         }

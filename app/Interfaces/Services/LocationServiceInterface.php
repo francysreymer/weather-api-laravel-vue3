@@ -23,4 +23,21 @@ interface LocationServiceInterface
      * @return bool
      */
     public function deleteLocation(int $id, int $userId): bool;
+
+    /**
+     * Get the weather forecast for a location by specific user id.
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function getLocationsWithForecastsByUserId(int $userId): array;
+
+    /**
+     * Get the weather forecast for a location by specific location id.
+     *
+     * @param int $id
+     * @param int $userId
+     * @return Location
+     */
+    public function getLocationWithForecastsById(int $id, int $userId): Location;
 }

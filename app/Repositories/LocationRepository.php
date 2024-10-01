@@ -70,4 +70,30 @@ class LocationRepository implements LocationRepositoryInterface
     {
         return $this->location->find($id);
     }
+
+    /**
+     * Get locations with the forecasts by user ID.
+     * 
+     * @param int $userId
+     * @return array
+     */
+    public function getLocationsWithForecastsByUserId(int $userId): array
+    {
+        return $this->location->where('user_id', $userId)
+            ->with('forecasts')
+            ->get()->all();
+    }
+
+    /**
+     * Get a location with the forecasts by location ID.
+     * 
+     * @param int $id
+     * @return Location
+     */
+    public function getLocationWithForecastsById(int $id): Location
+    {
+        return $this->location->where('id', $id)
+            ->with('forecasts')
+            ->firstOrFail();
+    }
 }

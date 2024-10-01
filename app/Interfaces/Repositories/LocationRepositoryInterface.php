@@ -38,4 +38,20 @@ interface LocationRepositoryInterface
      * @return Location|null
      */
     public function findById(int $id): ?Location;
+
+    /**
+     * Get locations with the forecasts by user ID.
+     * 
+     * @param int $userId
+     * @return array
+     */
+    public function getLocationsWithForecastsByUserId(int $userId): array;
+
+    /**
+     * Get a location with the forecasts by location ID.
+     * 
+     * @param int $id
+     * @return Location
+     */
+    public function getLocationWithForecastsById(int $id): Location;
 }

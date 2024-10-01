@@ -20,16 +20,6 @@ class Location extends Model
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
-
-    /**
      * Get the user that owns the location.
      */
     public function user()
@@ -43,5 +33,19 @@ class Location extends Model
     public function forecasts()
     {
         return $this->hasMany(Forecast::class);
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($location) {
+            $location->forecasts()->delete();
+        });
     }
 }

@@ -69,4 +69,32 @@ class LocationService implements LocationServiceInterface
     {
         return $this->locationRepository->findById($id);
     }
+
+    /**
+     * Get the weather forecast for a location by specific user id.
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function getLocationsWithForecastsByUserId(int $userId): array
+    {
+        return $this->locationRepository->getLocationsWithForecastsByUserId($userId);
+    }
+
+    /**
+     * Get the weather forecast for a location by specific location id.
+     *
+     * @param int $id
+     * @param int $userId
+     * @return Location
+     */
+    public function getLocationWithForecastsById(int $id, int $userId): Location
+    {
+        $location = $this->locationRepository->findById($id);
+        if (!$location || $location->user_id !== $userId) {
+            throw new UnauthorizedActionException();
+        }
+
+        return $this->locationRepository->getLocationWithForecastsById($id, $userId);
+    }
 }

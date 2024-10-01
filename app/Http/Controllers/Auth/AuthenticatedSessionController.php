@@ -33,7 +33,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Generate Sanctum token
+        $token = Auth::user()->createToken('token')->plainTextToken;
+
+        return redirect()->intended(route('locations.index'))->with('token', $token);
     }
 
     /**

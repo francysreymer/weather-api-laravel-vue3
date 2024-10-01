@@ -46,6 +46,9 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Generate Sanctum token
+        $token = Auth::user()->createToken('token')->plainTextToken;
+
+        return redirect(route('locations.index', absolute: false))->with('token', $token);
     }
 }

@@ -35,6 +35,13 @@ docker run --rm \
 # Up the sail containers
 ./vendor/bin/sail up -d
 
+# Clear all caches
+./vendor/bin/sail artisan cache:clear
+./vendor/bin/sail artisan route:clear
+./vendor/bin/sail artisan config:clear
+./vendor/bin/sail artisan view:clear
+./vendor/bin/sail artisan event:clear
+
 # Run the database seeder using Sail
 ./vendor/bin/sail artisan db:seed
 

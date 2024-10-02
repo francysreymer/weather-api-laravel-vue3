@@ -45,7 +45,7 @@ You should see a login page like this:
 
 ## Usage
 
-- **Frontend:** Accessible at [http://localhost/logim](http://localhost/login).
+- **Frontend:** Accessible at [http://localhost/login](http://localhost/login).
 
 ## Users Seed
 

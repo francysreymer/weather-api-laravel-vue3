@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Exception;
 
-class LocationFrontendController extends Controller
+class LocationPageController extends Controller
 {
     /**
      * Create a new LocationController instance.

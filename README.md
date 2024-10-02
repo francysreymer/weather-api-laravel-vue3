@@ -66,7 +66,7 @@ After logging in, users will be able to navigate through the following pages:
 
 The locations provides a page that shows all the city,states created by the logged user
 
-![Locations](images/lcoations.png)
+![Locations](images/locations.png)
 
 ### Add New Location
 

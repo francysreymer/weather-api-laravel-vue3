@@ -64,18 +64,18 @@ After logging in, users will be able to navigate through the following pages:
 
 ### Locations
 
-The locations provides a page that shows all the city,states created by the logged user
+The locations provides a page that shows all the city,states created by the logged user.
 
 ![Locations](images/locations.png)
 
 ### Add New Location
 
-The add new location page allows the logged user to add a specific city/state in order to see their weather forecast
+The add new location page allows the logged user to add a specific city/state in order to see their weather forecast.
 
 ![Add New Location](images/add-new-location.png)
 
 ### View Weather Forecasts
 
-The view weather forecasts page lists 3 weather forecasts for the specific location that had been previously saved
+The view weather forecasts page lists 3 weather forecasts for the specific location that had been previously saved.
 
 ![View Weather Forecasts](images/view-weather-forecasts.png)

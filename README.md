@@ -1,4 +1,4 @@
-# Water Jug Challenge
+# Weather Forecasts Challenge
 
 An application using Laravel and Vue3 for Weather Forecast API
 

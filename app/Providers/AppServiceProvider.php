@@ -8,7 +8,8 @@ use App\Interfaces\Repositories\LocationRepositoryInterface;
 use App\Repositories\LocationRepository;
 use App\Interfaces\Services\LocationServiceInterface;
 use App\Services\LocationService;
-use Inertia\Inertia;
+use App\Interfaces\Services\WeatherForecastServiceInterface;
+use App\Services\WeatherForecastService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
         $this->app->bind(LocationServiceInterface::class, LocationService::class);
+        $this->app->bind(WeatherForecastServiceInterface::class, WeatherForecastService::class);
     }
 
     /**

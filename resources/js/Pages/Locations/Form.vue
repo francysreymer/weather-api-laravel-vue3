@@ -1,75 +1,26 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Forecast } from '@/types/forecast';
 import { handleAxiosError } from '@/utils/axios';
-import { formatDate } from '@/utils/date';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { ref } from 'vue';
 
 const city = ref('');
 const state = ref('');
-const weatherForecastData = ref<Forecast[]>([]);
-const form = useForm({
-    city: '',
-    state: '',
-    forecasts: [] as Forecast[],
-});
-const isLoadingWeather = ref(false);
 const isLoadingSave = ref(false);
 const successMessage = ref('');
 const errorMessages = ref<string[]>([]);
-
-const mapForecastData = (forecast: any): Forecast => ({
-    date_forecast: forecast.dt_txt,
-    main: forecast.weather[0].main,
-    description: forecast.weather[0].description,
-    icon: forecast.weather[0].icon,
-    temperature: forecast.main.temp,
-    feels_like: forecast.main.feels_like,
-    min_temperature: forecast.main.temp_min,
-    max_temperature: forecast.main.temp_max,
-    pressure: forecast.main.pressure,
-    humidity: forecast.main.humidity,
-    wind_speed: forecast.wind.speed,
-    cloudiness: forecast.clouds.all,
-});
-
-const fetchWeatherForecastData = async () => {
-    isLoadingWeather.value = true;
-    successMessage.value = '';
-    errorMessages.value = [];
-    try {
-        const response = await axios.get('/api/weather-forecast', {
-            params: {
-                city: city.value,
-                state: state.value,
-            },
-            headers: {
-                Authorization: `Bearer ${Cookies.get('api_token')}`,
-            },
-        });
-        weatherForecastData.value = response.data.list.map(mapForecastData);
-        form.city = city.value;
-        form.state = state.value;
-        form.forecasts = response.data.list.map(mapForecastData);
-    } catch (error) {
-        errorMessages.value = handleAxiosError(error);
-    } finally {
-        isLoadingWeather.value = false;
-    }
-};
 
 const submit = async () => {
     successMessage.value = '';
     errorMessages.value = [];
     try {
-        const test = await axios.post(
+        const data = await axios.post(
             '/api/locations',
             {
-                name: `${form.city}, ${form.state}`,
-                forecasts: form.forecasts,
+                city: city.value,
+                state: state.value,
             },
             {
                 headers: {
@@ -78,10 +29,10 @@ const submit = async () => {
             },
         );
         successMessage.value = 'Location saved successfully!';
-        console.log('francys test', test);
+        console.log('francys data: ', data);
         setTimeout(() => {
-            window.location.href = '/locations';
-        }, 1000); // Redirect after 2 seconds
+            //window.location.href = '/locations';
+        }, 1000); // Redirect after 1 second
     } catch (error) {
         errorMessages.value = handleAxiosError(error);
     } finally {
@@ -107,7 +58,7 @@ const submit = async () => {
                 </div>
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <form @submit.prevent="fetchWeatherForecastData">
+                        <form @submit.prevent="submit">
                             <div class="mb-4">
                                 <label
                                     for="city"
@@ -136,98 +87,10 @@ const submit = async () => {
                                     required
                                 />
                             </div>
-                            <button type="submit" class="btn btn-purple">
-                                Fetch Forecast Data
+                            <button type="submit" class="btn btn-success">
+                                Save Location
                             </button>
                         </form>
-
-                        <div v-if="isLoadingWeather" class="mt-4">
-                            <p>Loading weather forecast data...</p>
-                        </div>
-
-                        <div v-if="weatherForecastData.length" class="mt-6">
-                            <h3 class="text-lg font-semibold">
-                                Weather Forecast Data
-                            </h3>
-                            <ul>
-                                <li
-                                    v-for="(
-                                        forecast, index
-                                    ) in weatherForecastData"
-                                    :key="index"
-                                    class="mb-4 rounded border p-4"
-                                >
-                                    <div class="flex items-center">
-                                        <img
-                                            :src="`http://openweathermap.org/img/wn/${forecast.icon}.png`"
-                                            alt="Weather Icon"
-                                            class="mr-4"
-                                        />
-                                        <div>
-                                            <p>
-                                                <strong>Date:</strong>
-                                                {{
-                                                    formatDate(
-                                                        forecast.date_forecast,
-                                                    )
-                                                }}
-                                            </p>
-                                            <p>
-                                                <strong>Main:</strong>
-                                                {{ forecast.main }}
-                                            </p>
-                                            <p>
-                                                <strong>Description:</strong>
-                                                {{ forecast.description }}
-                                            </p>
-                                            <p>
-                                                <strong>Temperature:</strong>
-                                                {{ forecast.temperature }}°C
-                                            </p>
-                                            <p>
-                                                <strong>Feels Like:</strong>
-                                                {{ forecast.feels_like }}°C
-                                            </p>
-                                            <p>
-                                                <strong
-                                                    >Min Temperature:</strong
-                                                >
-                                                {{ forecast.min_temperature }}°C
-                                            </p>
-                                            <p>
-                                                <strong
-                                                    >Max Temperature:</strong
-                                                >
-                                                {{ forecast.max_temperature }}°C
-                                            </p>
-                                            <p>
-                                                <strong>Pressure:</strong>
-                                                {{ forecast.pressure }} hPa
-                                            </p>
-                                            <p>
-                                                <strong>Humidity:</strong>
-                                                {{ forecast.humidity }}%
-                                            </p>
-                                            <p>
-                                                <strong>Wind Speed:</strong>
-                                                {{ forecast.wind_speed }} m/s
-                                            </p>
-                                            <p>
-                                                <strong>Cloudiness:</strong>
-                                                {{ forecast.cloudiness }}%
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <button
-                                @click="submit"
-                                class="btn btn-success mt-4"
-                                :disabled="isLoadingSave"
-                            >
-                                Save Location with Forecast
-                            </button>
-                        </div>
 
                         <div v-if="isLoadingSave" class="mt-4">
                             <p>Saving location...</p>

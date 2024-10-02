@@ -31,7 +31,7 @@ const submit = async () => {
         successMessage.value = 'Location saved successfully!';
         console.log('francys data: ', data);
         setTimeout(() => {
-            //window.location.href = '/locations';
+            window.location.href = '/locations';
         }, 1000); // Redirect after 1 second
     } catch (error) {
         errorMessages.value = handleAxiosError(error);
